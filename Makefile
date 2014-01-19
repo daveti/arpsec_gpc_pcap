@@ -6,12 +6,13 @@
 CC2=gplc
 LIBS2='-lgcrypt -lpthread -ltspi -lpcap -lnet -lnetlink'
 CC=gcc
+CCOPTIONS='-g'
 LIBS=-lgcrypt -ltspi -lpthread
 
 all: arpsecd_gpc_pcap tpmd checkproc
 
 arpsecd_gpc_pcap: arpsec.pl arpsecd.c AsLog.c AsLogic.c AsTMeasure.c AsKrnRelay.c AsNetlink.c AsTpmDB.c AsWhiteList.c AT.c tpmw.c timer_queue.c timer_thread.c AsPcap.c AsKrnProc.c AsNet.c AsNeighbor.c AsControl.c
-	$(CC2) arpsec.pl arpsecd.c AsLog.c AsLogic.c AsTMeasure.c AsKrnRelay.c AsNetlink.c AsTpmDB.c AsWhiteList.c AT.c tpmw.c timer_queue.c timer_thread.c AsPcap.c AsKrnProc.c AsNet.c AsNeighbor.c AsControl.c --c-compiler $(CC) -L $(LIBS2) -o arpsecd_gpc_pcap
+	$(CC2) arpsec.pl arpsecd.c AsLog.c AsLogic.c AsTMeasure.c AsKrnRelay.c AsNetlink.c AsTpmDB.c AsWhiteList.c AT.c tpmw.c timer_queue.c timer_thread.c AsPcap.c AsKrnProc.c AsNet.c AsNeighbor.c AsControl.c --c-compiler $(CC) -C $(CCOPTIONS) -L $(LIBS2) -o arpsecd_gpc_pcap
 
 tpmd: tpmd.c tpmw.c AT.c
 	$(CC) tpmd.c tpmw.c AT.c $(LIBS) -o tpmd

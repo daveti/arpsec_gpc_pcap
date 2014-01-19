@@ -39,6 +39,7 @@
 #define MAX_SIM_VALS 10
 #define AS_SIMMSG_FREQ 25
 #define PIPE_NAME "input.pipe"
+#define UNKNOWN_SYS_NAME "Unknown_"
 
 // Module local data
 int     pipefd;
@@ -53,6 +54,8 @@ unsigned char *relayQueue;
 unsigned char *relayQueuePtr;
 // daveti: add Round-robin support for reading msgs from multiple CPUs
 int	relayidxNext;
+// daveti: global counter for forging the system name when getnameinfo fails
+int	relayUnknownSysCounter;
 
 int	ask_initialized	    = 0;		// Intialized flag
 int	ask_operating_mode  = ASKRN_UNKNOWN;    // Mode variable
@@ -784,7 +787,15 @@ char * askGetSystemName(char *ip_ptr)
 	rtn = getnameinfo((struct sockaddr *)&sa, sizeof(sa),
 			hbuf, sizeof(hbuf), NULL, 0, NI_NAMEREQD);
 	if (rtn != 0)
+	{
 		asLogMessage("Error on getnameinfo [%s]", gai_strerror(rtn));
+		// Fake the system name to avoid segV in the following calls
+		snprintf(hbuf, NI_MAXHOST, "%s%s",
+				UNKNOWN_SYS_NAME, relayUnknownSysCounter);
+		relayUnknownSysCounter++;
+		asLogMessage("Info - fake the remote hostname [%s] for IP [%s]",
+				hbuf, ip_ptr);
+	}
 	else
 		asLogMessage("Info - got the remote hostname [%s] for IP [%s]",
 				hbuf, ip_ptr);
