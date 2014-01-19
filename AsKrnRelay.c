@@ -790,7 +790,7 @@ char * askGetSystemName(char *ip_ptr)
 	{
 		asLogMessage("Error on getnameinfo [%s]", gai_strerror(rtn));
 		// Fake the system name to avoid segV in the following calls
-		snprintf(hbuf, NI_MAXHOST, "%s%s",
+		snprintf(hbuf, NI_MAXHOST, "%s%d",
 				UNKNOWN_SYS_NAME, relayUnknownSysCounter);
 		relayUnknownSysCounter++;
 		asLogMessage("Info - fake the remote hostname [%s] for IP [%s]",

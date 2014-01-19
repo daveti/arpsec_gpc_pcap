@@ -57,6 +57,7 @@ int	ascForceAttestFlag = 0;	    // daveti: Force the attestation even if the log
 int	ascEnableCacheFlag = 0;	    // daveti: Enable cache (using the whitelist) if the attestation succeeds
 int     ascDisableLogicFindBindingsFlag = 0;    // daveti: disable the aslFindXXXBindings calls for perf debugging
 int     ascDisableLogicAddBindingsFlag = 0;     // daveti: dsiable the aslAddBindingsXXX calls for perf debugging
+int	ascDisableLogicAddTrustStatementFlag = 0;	// daveti: disable the aslAddTrustStatement calls for perf debugging
 char	*ascLocalSystem = NULL;	    // The name of the local system (logic format)
 char	*ascLocalNet = NULL;	    // The local network address name (logic format)
 char	*ascLocalMedia = NULL;	    // The local media address name (logic format)
@@ -71,6 +72,19 @@ char *myMAC;
 
 //
 // Module functions
+
+////////////////////////////////////////////////////////////////////////////////
+//
+// Function     : ascDisableLogicAddTrustStatement
+// Description  : Disable the aslAddTrustStatement calls in the ARP msg processing
+//
+// Inputs       : void
+// Outputs      : void
+
+void ascDisableLogicAddTrustStatement(void)
+{
+        ascDisableLogicAddTrustStatementFlag = 1;
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 //
@@ -306,10 +320,14 @@ int ascAddNeighbor(struct libnet_arp_hdr *arp, u_int32_t ip, char *iface)
     return -1;
   }
 
+/*
+daveti: the logic has been done in the caller - ascProcessArp...
+
   if (tpa != ip) {
     asLogMessage("ascAddNeighbor: Info - Reply not for me\n");
     return -1;
   }
+*/
 
   /* Add the binding */
   neigh_add(earp->arp_sha, spa, iface, NUD_REACHABLE);
@@ -357,7 +375,7 @@ int ascProcessArpRequest( askRelayMessage *msg,
     //Local variables
     int ret = 0;
     AsTime now = time(NULL);
-    char media[MAX_MEDADDR_LENGTH];
+    char media[MAX_MEDADDR_LENGTH] = {0};
     AsMediaAddress med = media;
 
     // Do a quick sanity check
@@ -525,7 +543,8 @@ int ascProcessArpResponse( askRelayMessage *msg,
 	    }
 
 	    // Add the attestation time to the logic
-	    aslAddTrustStatement( msg->source, now );
+	    if (ascDisableLogicAddTrustStatementFlag == 0)
+	    	aslAddTrustStatement( msg->source, now );
 
 	    // Add the MAC/IP into the whitelist (cache) if the attestation succeeds
 	    // Currently only ARP response has caching functionality
@@ -646,7 +665,7 @@ int ascProcessRArpRequest( askRelayMessage *msg ) {
     //Local variables
     int ret = 0;
     AsTime now = time(NULL);
-    char network[MAX_NETADDR_LENGTH];
+    char network[MAX_NETADDR_LENGTH] = {0};
     AsNetworkAddress net = network;
 
     // Do a quick sanity check
@@ -797,7 +816,8 @@ int ascProcessRArpResponse( askRelayMessage *msg ) {
 	    }
 
 	    // Add the attestation time to the logic
-	    aslAddTrustStatement( msg->source, now );
+	    if (ascDisableLogicAddTrustStatementFlag == 0)
+	    	aslAddTrustStatement( msg->source, now );
 	}
 
 	// Now add the binding statement

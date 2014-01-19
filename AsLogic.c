@@ -171,7 +171,7 @@ int aslAddTrustStatement( AsSystem s, AsTime t ) {
     arg[1] = Pl_Mk_Integer(t);
     arg2[0] = Pl_Mk_Callable(gpc_func_dynamic_trust_statement_num, 2, arg);
     res = Pl_Query_Call(gpc_func_asserta_num, 1, arg2);
-    Pl_Query_End(PL_RECOVER);
+    Pl_Query_End(PL_KEEP_FOR_PROLOG);
 
     // Get output and process
     if (res != 1) {
@@ -218,7 +218,7 @@ int aslAddBindingStatement( AsSystem s, AsMediaAddress m, AsNetworkAddress n, As
     arg[3] = Pl_Mk_Integer(t);
     arg2[0] = Pl_Mk_Callable(gpc_func_dynamic_binding_statement_num, 4, arg);
     res = Pl_Query_Call(gpc_func_asserta_num, 1, arg2);
-    Pl_Query_End(PL_RECOVER);
+    Pl_Query_End(PL_KEEP_FOR_PROLOG);
 
     // Get output and process
     if (res != 1) {
@@ -278,7 +278,7 @@ int aslFindValidMediaBinding( AsNetworkAddress n, AsMediaAddress m, AsTime t ) {
 		break;
 	}
     }
-    Pl_Query_End(PL_RECOVER);
+    Pl_Query_End(PL_KEEP_FOR_PROLOG);
 
     // Parse out the solutions
     asLogMessage("Info: aslFindValidMediaBinding got [%d] solutions in total", sol_num);
@@ -340,7 +340,7 @@ int aslFindValidNetworkBinding( AsNetworkAddress n, AsMediaAddress m, AsTime t )
 		break;
 	}
     }
-    Pl_Query_End(PL_RECOVER);
+    Pl_Query_End(PL_KEEP_FOR_PROLOG);
 
     // Parse out the solutions
     asLogMessage("Info: aslFindValidNetworkBinding got [%d] solutions in total", sol_num);
@@ -386,7 +386,7 @@ int aslSystemTrusted( AsSystem s, AsTime t ) {
     arg[0] = Pl_Mk_String(s);
     arg[1] = Pl_Mk_Integer(t);
     res = Pl_Query_Call(gpc_func_trusted_num, 2, arg);
-    Pl_Query_End(PL_RECOVER);
+    Pl_Query_End(PL_KEEP_FOR_PROLOG);
 
     // Just reture the res!
     return( res );

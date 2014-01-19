@@ -36,6 +36,9 @@ void ascDisableLogicFindBindings(void);
 // Disable the logic add bindings for performance debugging
 void ascDisableLogicAddBindings(void);
 
+// Disable the logic add trust statement for performance debugging
+void ascDisableLogicAddTrustStatement(void);
+
 // Get the local information associated with this process
 char *ascGetLocalNet(void);
 char *ascGetLocalMedia(void);

@@ -24,9 +24,9 @@
 #include "AsTMeasure.h"
 
 // Definitions
-#define ARPSEC_ARGUMENTS "shfcandbl:"
+#define ARPSEC_ARGUMENTS "shfcandbel:"
 #define USAGE \
-    "\nUSAGE: arpsecd [-h] [-l <logfile>] [-s] [-f] [-a] [-c] [-n] [-d] [-b]\n" \
+    "\nUSAGE: arpsecd [-h] [-l <logfile>] [-s] [-f] [-a] [-c] [-n] [-d] [-b] [-e]\n" \
     "\n" \
     "where:\n" \
     "   -h - display this help information\n" \
@@ -38,6 +38,7 @@
     "	-n - no logic layer invoked (always return 'untrusted' from logic layer).\n" \
     "	-d - disable aslFindXXXBindings (only for dev performance debugging).\n" \
     "	-b - disable aslAddBindingsXXX (only for dev performance debugging).\n" \
+    "	-e - disable aslAddTrustStatement (only for dev performance debugging).\n" \
     "   -s - simulate the kernel and network traffic\n\n"
 
 //
@@ -94,6 +95,10 @@ int main(int argc, char **argv) {
 
 	    case 'b': // Disable the aslAddBindingsXXX
 		ascDisableLogicAddBindings();
+		break;
+
+	    case 'e': // Disable the aslAddTrustStatement
+		ascDisableLogicAddTrustStatement();
 		break;
 
 	    case 'a': // Allow the binding if no DB entry found
